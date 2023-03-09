@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -59,8 +60,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new RuntimeException("Invalid employeeId: " + id);
         }
 
-        // Store directReport Employees in a Set to ensure uniqueness of directReport Employees.
-        Set<Employee> directReportsSet = new HashSet<>();
+        // Store directReport Employees in a Set to ensure uniqueness of directReport Employees, and to check for cycles in reporting structure.
+        Set<String> directReportsSet = new HashSet<>();
 
         // Perform non-recursive DFS to find all Employees in directReports field:
         Stack<Employee> stack = new Stack<>();
@@ -72,8 +73,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 for (Employee e : current.getDirectReports()) {
                     // Look up each directReport Employee by ID, because directReports field might only contain employeeId Strings.
                     Employee reportEmployee = employeeRepository.findByEmployeeId(e.getEmployeeId());
-                    if (reportEmployee != null) {
-                        directReportsSet.add(reportEmployee);
+                    if (reportEmployee != null && !e.getEmployeeId().equals(employee.getEmployeeId()) && !directReportsSet.contains(e.getEmployeeId())) {
+                        directReportsSet.add(reportEmployee.getEmployeeId());
                         stack.push(reportEmployee);
                     } else {
                         throw new RuntimeException("Invalid directReport employeeId: " + id);
