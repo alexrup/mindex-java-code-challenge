@@ -21,7 +21,6 @@ public class CompensationServiceImpl implements CompensationService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-
     @Override
     public Compensation create(Compensation compensation) {
         LOG.debug("Creating compensation [{}]", compensation);
@@ -32,6 +31,7 @@ public class CompensationServiceImpl implements CompensationService {
             throw new RuntimeException("Invalid employeeId: " + compensation.getEmployee().getEmployeeId());
         }
 
+        // Check to make sure Employee doesn't already have a Compensation.
         Compensation existing = compensationRepository.findByEmployeeEmployeeId(employee.getEmployeeId());
         if (existing != null) {
             throw new RuntimeException("Compensation for employee already exists: " + compensation.getEmployee().getEmployeeId());

@@ -1,3 +1,20 @@
+# How I Approached This Challenge:
+
+### General Notes:
+
+* I attempted to follow all instructions to the letter, as much as possible.
+* I Debated whether to include the requested methods for Compensation and ReportingStructure all within the existing EmployeeController and EmployeeService. I opted to separate Compensation to its own controller and service, but left ReportingStructure methods in the EmployeeService and EmployeeController. I tried to strike a balance between not overly complicating this small application, while still trying to demonstrate software design best practices.
+
+### Notes For Task 2:
+
+* No "update" endpoint was requested in the instructions. I considered adding one, but opted to only include the 2 required for create/read. If desired, a PUT method could be added to update a given Compensation, similarly to how it's handled for an Employee.
+* When creating a new Compensation, only 1 is allowed per employeeId. If you try to add multiple Compensations for the same Employee, it will throw a 500 after the first. This was technically not specified in the instructions, but seemed a reasonable restriction in testing.
+* When creating a new Compensation, it will only be created if the Employee actually exists in the DB. If no matching Employee exists, it throws a 500. Again, this wasn't technically in the instructions but seemed like a reasonable restriction in testing.
+* Dates are accepted in format "yyyy-MM-dd". I considered adding more exhaustive serialization/deserialization to support multiple date formats, time stamps, etc... In the end decided to keep it simple and handle the one format, and to simply let Jackson perform serialization/deserialization using the @JsonFormat annotation.
+
+
+
+
 # Coding Challenge
 ## What's Provided
 A simple [Spring Boot](https://projects.spring.io/spring-boot/) web application has been created and bootstrapped 
